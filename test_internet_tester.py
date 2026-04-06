@@ -238,7 +238,8 @@ def test_task_10():
         page.goto(URL)
 
         link_form = navigate_to_example(page, TITLE_FILE_UPLOAD)
-
+        with open("test_upload.txt", "r") as file:
+            content = file.read()
         # file_upload = Path(__file__).parent / FILE_NAME
 
         field_file_upload = page.locator("#file-upload")
