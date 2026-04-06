@@ -2,10 +2,10 @@ import time
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
-load_dotenv()
+# load_dotenv()
 
 URL = "https://the-internet.herokuapp.com/"
 TEXT_TO_FIND = "the-internet"
@@ -84,13 +84,17 @@ def test_task_03():
         browser = drv.chromium.launch(headless=False, slow_mo=1000)
         page = browser.new_page()
         page.goto(URL)
-
-        field_username = page.locator("#username")
-        field_password = page.locator("#password")
-        env_username = os.getenv("USER")
-        env_password = os.getenv("PASS")
-        field_username.fill(env_username)
-        field_password.fill(env_password)
+        link_form = navigate_to_example(page, TITLE_FORM)
+        assert_text_in_url(link_form, LINK_LOGIN)
+        print(f"T2: ✅ Перешли в: Form Authentication | URL: {link_form}")
+        # field_username = page.locator("#username")
+        # field_password = page.locator("#password")
+        page.fill("#username", "tomsmith")
+        page.fill("#password", "SuperSecretPassword!")
+        # env_username = field_username.fill("tomsmith")
+        # env_password = os.getenv("SuperSecretPassword!")
+        # field_username.fill(env_username)
+        # field_password.fill(env_password)
 
         btn_login = page.locator("//button/i[contains(@class, 'sign-in')]")
         btn_login.click()
@@ -103,6 +107,15 @@ def test_task_04():
         browser = drv.chromium.launch(headless=False, slow_mo=1000)
         page = browser.new_page()
         page.goto(URL)
+        link_form = navigate_to_example(page, TITLE_FORM)
+        assert_text_in_url(link_form, LINK_LOGIN)
+        print(f"T2: ✅ Перешли в: Form Authentication | URL: {link_form}")
+        page.fill("#username", "tomsmith")
+        page.fill("#password", "SuperSecretPassword!")
+        btn_login = page.locator("//button/i[contains(@class, 'sign-in')]")
+        btn_login.click()
+        assert_text_in_url(page.url, LINK_SECURE)
+        print(f"T3: ✅ Успешный вход! URL: {page.url}")
 
         btn_logout = page.locator(".button[href='/logout']")
         btn_logout.click()
@@ -246,4 +259,4 @@ def test_task_11():
 
 
 if __name__ == "__main__":
-    test_task_11()
+    test_task_10()
