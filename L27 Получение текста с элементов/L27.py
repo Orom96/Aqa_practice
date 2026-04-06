@@ -1,8 +1,10 @@
 from playwright.sync_api import sync_playwright, Page, expect
 
 URL_BTN = 'https://demoqa.com/buttons'
+URL_TEXT_BOX = 'https://demoqa.com/text-box'
 Btn_Double_Click_Me = 'Double Click Me'
 text_click_me = 'You have done a dynamic click'
+URL_Select_Menu = 'https://demoqa.com/select-menu'
 # 27x01: «Текст кнопки» (Buttons)
 
 
@@ -40,10 +42,6 @@ def test_task_02():
             to_have_text(text_click_me)
         print("текст совппапдает")
 
-
-
-
-
         # button = page.locator("text=Click Me")
         # # text = button.inner_text()
         # print(f"{button} найден")
@@ -58,6 +56,64 @@ def test_task_02():
     # print(f"T1: ✅ Сайт доступен. Заголовок: '{text_h1}'")
 
 
+# Страница:https://demoqa.com/text-box
+# Задача:
+# 1. Откройте форму «Text Box».
+# 2. Введите ваше имя в поле «Full Name» (через .fill()).
+# 3. Введите email в поле «Email».
+# 4. Прочитайте значения обоих полей через .input_value().
+# 5. Выведите их в консоль в формате: "Имя: ..., Email: ..."
+# Что тренируем:
+# Использование .input_value() для полей ввода
+#
+# Чтение данных из формы
+
+def test_task_03():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_TEXT_BOX)
+        page.get_by_placeholder("Full Name").fill("Orom")
+        page.get_by_placeholder("name@example.com").fill("orom@gmail.com")
+        print("поля заполнили")
+        value1 = page.locator("#userName").input_value()
+        value2 = page.locator("#userEmail").input_value()
+        print(f"Имя:{value1}, Email:{value2}")
+
+
+# Страница:https://demoqa.com/select-menu
+# Задача:
+# 1. Откройте страницу «Select Menu».
+# 2. Найдите все опции в стандартном выпадающем списке.
+# 3. Получите тексты всех опций через .all_inner_texts().
+# 4. Выведите список в консоль.
+# 5. Проверьте, что в списке есть опция "Optimus Prime".
+# Что тренируем:
+# Метод .all_inner_texts() для списков
+#
+# Проверку наличия элемента в списке
+def test_task_04():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_Select_Menu)
+        selected1 = page.locator("#withOptGroup")
+        selected1.click()
+        value_dropdown = selected1.all_inner_texts()
+        selected2 = page.locator("#selectOne")
+        selected2.click()
+        value2_dropdown = selected2.all_inner_texts()
+        # assert 'Optimus Prime' in value_dropdown and value2_dropdown
+        print(f'{value_dropdown}, {value2_dropdown}')
+
+        # page.get_by_placeholder("Full Name").fill("Orom")
+        # page.get_by_placeholder("name@example.com").fill("orom@gmail.com")
+        # print("поля заполнили")
+        # value1 = page.locator("#userName").input_value()
+        # value2 = page.locator("#userEmail").input_value()
+        # print(f"Имя:{value1}, Email:{value2}")
+
+
 if __name__ == "__main__":
-    test_task_02()
+    test_task_04()
 
