@@ -6,6 +6,14 @@ Btn_Double_Click_Me = 'Double Click Me'
 text_click_me = 'You have done a dynamic click'
 URL_Select_Menu = 'https://demoqa.com/select-menu'
 # 27x01: «Текст кнопки» (Buttons)
+URL_text_box = 'https://demoqa.com/text-box'
+URL_the_int_hero = ('https://the-internet.herokuapp.com/')
+
+# def base_page():
+#     with sync_playwright() as drv:
+#         browser = drv.chromium.launch(headless=False, slow_mo=1000)
+#         page = browser.new_page()
+#         page.goto(URL_BTN)
 
 
 def test_task_01():
@@ -100,20 +108,52 @@ def test_task_04():
         selected1 = page.locator("#withOptGroup")
         selected1.click()
         value_dropdown = selected1.all_inner_texts()
-        selected2 = page.locator("#selectOne")
-        selected2.click()
-        value2_dropdown = selected2.all_inner_texts()
-        # assert 'Optimus Prime' in value_dropdown and value2_dropdown
-        print(f'{value_dropdown}, {value2_dropdown}')
+        assert "Optimus Prime" in value_dropdown
 
-        # page.get_by_placeholder("Full Name").fill("Orom")
-        # page.get_by_placeholder("name@example.com").fill("orom@gmail.com")
-        # print("поля заполнили")
-        # value1 = page.locator("#userName").input_value()
-        # value2 = page.locator("#userEmail").input_value()
-        # print(f"Имя:{value1}, Email:{value2}")
+        print(f'{value_dropdown}')
+
+# Страница: https://demoqa.com/text-box
+# Задача:
+# 1. Откройте страницу.
+# 2. Найдите лейбл «Current Address».
+# 3. Получите его текст через .inner_text() и .text_content().
+# 4. Сравните результаты (выведите через repr()).
+# 5. Объясните, есть ли разница (должны быть одинаковы для видимого текста).
+# Что тренируем:
+# Разницу между .inner_text() и .text_content()
+#
+# Отладку через repr()
+
+
+def test_task_05():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_text_box, wait_until="domcontentloaded")
+        a1 = page.get_by_placeholder("Current Address").inner_text()
+        a2 = page.get_by_placeholder("Current Address").text_content()
+        print(repr(a1))
+        print(repr(a2))
+
+
+# Страница: https://the-internet.herokuapp.com/
+# Задача:
+# 1. Откройте главную страницу.
+# 2. Получите заголовок <h3> через .inner_text().
+# 3. Проверьте, что заголовок содержит "Available Examples".
+# 4. Используйте expect().to_contain_text().
+# Что тренируем:
+# Базовое получение текста
+#
+# Частичное совпадение через to_contain_text()
+def test_task_05():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_the_int_hero, wait_until="domcontentloaded")
+        page.title
 
 
 if __name__ == "__main__":
-    test_task_04()
+    test_task_05()
 
