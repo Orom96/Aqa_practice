@@ -14,7 +14,7 @@ LINK_SECURE = "/secure"
 
 TITLE_FORM = "Form Authentication"
 TITLE_CHECKBOXES = "Checkboxes"
-TITLE_DROPDOWN = "Dropdown"
+TITLE_DROPDOWN = "https://the-internet.herokuapp.com/dropdown"
 TITLE_INPUTS = "Inputs"
 TITLE_HOVERS = "Hovers"
 TITLE_JS_ALERTS = "JavaScript Alerts"
@@ -150,7 +150,18 @@ def test_task_06():
     with sync_playwright() as drv:
         browser = drv.chromium.launch(headless=False, slow_mo=1000)
         page = browser.new_page()
-        page.goto(URL)
+        page.goto(TITLE_DROPDOWN)
+        dropdown = page.get_by_role("link", name="Dropdown")
+        assert '' in dropdown
+        dropdown.click()
+
+
+
+
+
+
+
+
 
         link_form = navigate_to_example(page, TITLE_DROPDOWN)
         assert_text_in_url(link_form, LINK_DROPDOWN)
@@ -224,7 +235,7 @@ def test_task_09():
         btn_js_alerts.click()
         time.sleep(3)
         page.on("dialog", accept_dialog)
-        # page.on("dialog", lambda d: d.accept())
+
         result = page.locator("#result")
         _assert_selected(MSG_CLICK_JS_ALLERT, result.inner_text())
 
@@ -238,7 +249,8 @@ def test_task_10():
         page.goto(URL)
 
         link_form = navigate_to_example(page, TITLE_FILE_UPLOAD)
-
+        with open("test_upload.txt", "r") as file:
+            content = file.read()
         # file_upload = Path(__file__).parent / FILE_NAME
 
         field_file_upload = page.locator("#file-upload")
@@ -259,4 +271,4 @@ def test_task_11():
 
 
 if __name__ == "__main__":
-    test_task_10()
+    test_task_06()
