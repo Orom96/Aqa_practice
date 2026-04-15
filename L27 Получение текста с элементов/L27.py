@@ -7,8 +7,12 @@ text_click_me = 'You have done a dynamic click'
 URL_Select_Menu = 'https://demoqa.com/select-menu'
 # 27x01: «Текст кнопки» (Buttons)
 URL_text_box = 'https://demoqa.com/text-box'
-URL_the_int_hero = ('https://the-internet.herokuapp.com/')
+URL_the_int_hero = 'https://the-internet.herokuapp.com/'
+URL_THE_INT_LOGIN = 'https://the-internet.herokuapp.com/login'
+URL_THE_INT_CHECKBOX = 'https://the-internet.herokuapp.com/checkboxes'
 
+URL_DYNAMIC_LOADING_2 = 'https://the-internet.herokuapp.com/dynamic_loading/2'
+URL_IFRAME = 'https://the-internet.herokuapp.com/iframe'
 # def base_page():
 #     with sync_playwright() as drv:
 #         browser = drv.chromium.launch(headless=False, slow_mo=1000)
@@ -146,14 +150,94 @@ def test_task_05():
 # Базовое получение текста
 #
 # Частичное совпадение через to_contain_text()
-def test_task_05():
+def test_task_06():
     with (sync_playwright() as drv):
         browser = drv.chromium.launch(headless=False, slow_mo=1000)
         page = browser.new_page()
-        page.goto(URL_the_int_hero, wait_until="domcontentloaded")
-        page.title
+        page.goto(URL_the_int_hero)
+        loc_h3 = page.locator("h2")
+        text_h3 = loc_h3.inner_text()
+        # expect(page.get_by_role("heading", name="Available Examples")).\to_be_visible
+        expect(loc_h3).to_contain_text('Available Examples')
+        # assert 'Available Examples' in text_h3
+        print(text_h3)
+
+
+def test_task_07():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_THE_INT_LOGIN)
+        user_name = page.locator('#username')
+        user_name.fill('tomsmith')
+        user_password = page.locator('#password')
+        user_password.fill('SuperSecretPassword')
+        btn_login = page.locator('[type="submit"]')
+        btn_login.click()
+        error = page.locator('#flash')
+        assert 'Your password is invalid!' in error.inner_text()
+
+
+def test_task_08():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_THE_INT_LOGIN)
+        user_name = page.locator('#username')
+        user_name.fill('tomsmith')
+        user_password = page.locator('#password')
+        user_password.fill('SuperSecretPassword!')
+        btn_login = page.locator('[type="submit"]')
+        btn_login.click()
+        success = page.locator('[class="subheader"]')
+        success.inner_text()
+        assert 'Welcome to the Secure Area' in success.inner_text()
+        success.input_value()
+        print(success.input_value())
+
+
+def test_task_09():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_THE_INT_CHECKBOX)
+        checkbox = page.locator('input [type= "checkbox"]')
+        count = checkbox.count()
+        print(f"Количество чекбоксов: {count}")
+        # for i in range(count):
+        #     cb = checkbox.nth(i)
+        #
+        #     state = "checked ✅" if cb.is_checked() else "unchecked ❌"
+        #     print(f"Checkbox {i + 1}: {state}")
+        #
+        #     # текст страницы (подписей тут почти нет, но можно взять весь текст)
+        # text = page.locator("#checkboxes").inner_text()
+        # print("\nТекст блока:")
+        # print(text)
+
+
+def test_task_10():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_DYNAMIC_LOADING_2)
+        page.locator('#start button').click()
+        expect(page.locator('#finish')).to_have_text('Hello World!')
+        text = page.locator('#finish').inner_text()
+        print(text)
+
+
+def test_task_11():
+    with (sync_playwright() as drv):
+        browser = drv.chromium.launch(headless=False, slow_mo=1000)
+        page = browser.new_page()
+        page.goto(URL_IFRAME)
+        page.frame_locator('#iframe').locator('body[data-id="mce_0"]')
+        text = page.frame_locator('#iframe').locator('body[data-id="mce_0"]')\
+            .inner_text()
+        print(text)
 
 
 if __name__ == "__main__":
-    test_task_05()
+    test_task_11()
 
